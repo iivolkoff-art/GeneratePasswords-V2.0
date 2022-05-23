@@ -1,7 +1,4 @@
 ﻿#include <iostream>
-#include <algorithm>
-#include <time.h>
-#include <stdlib.h>
 #include <fstream>
 #include <chrono>
 
@@ -17,52 +14,125 @@ private:
     int numOfSmallCharsRus;
     int numOfBigCharsRus;
     char* password;
+    int option;
 
 public:
-    int displayMessage()
+    void displayMessage()
     {
         int passLenght;
         int numOfPasswords;
-        char* filename = new char[20];
-        char txt = 'txt';
+        string FileName = "Password.txt";
 
         cout << "Введеные даные должны быть 0 < X < 11" << endl;
         cout << "Введите длину пароля для генерации: ";
         cin >> passLenght;
+        
         if (passLenght < 1 || passLenght > 10)
         {
+            system("cls");
             cout << "Ошибка ввода данных, попробуйте еще раз" << endl;
-            return 0;
+            cout << endl;
+            displayMessage();
         }
 
         cout << "Введите количество паролей для генерации: ";
         cin >> numOfPasswords;
         if (numOfPasswords < 1 || numOfPasswords > 10)
         {
+            system("cls");
             cout << "Ошибка ввода данных, попробуйте еще раз" << endl;
-            return 0;
+            cout << endl;
+            displayMessage();
         }
 
         cout << "Будет сгенерировано паролей: " << numOfPasswords << "." << endl;
         cout << endl;
-        cout << "Введите имя файла для записи(указать расширенние, например .txt): ";
-        cin >> filename;
 
-        ofstream outFile(filename);
+        cout << "1) цифры\n"
+            "2) строчные латинские буквы\n"
+            "3) латинские строчные и заглавные буквы\n"
+            "4) кириллица строчные\n"
+            "5) кириллица строчные, заглавные\n"
+            "6) цифры , латиница строчные\n";
+        cin >> option;
+        
+        ofstream outFile(FileName);
 
         auto start = high_resolution_clock::now();
-
-        for (int k = 0; k < numOfPasswords; k++)
+        switch (option) 
         {
-            for (int i = 0; i < passLenght; ++i)
+        case 1:
+            for (int k = 0; k < numOfPasswords; k++)
             {
+                for (int i = 0; i < passLenght; ++i)
+                {
+                    passGeneratorNumb(passLenght);
 
-                numOfChars(passLenght);
-                passGenerator(passLenght);
-
-                outFile << password[i];
+                    outFile << password[i];
+                }
+                outFile << endl;
             }
-            outFile << endl;
+            break;
+        case 2:
+            for (int k = 0; k < numOfPasswords; k++)
+            {
+                for (int i = 0; i < passLenght; ++i)
+                {
+                    passGeneratorSmallChars(passLenght);
+
+                    outFile << password[i];
+                }
+                outFile << endl;
+            }
+            break;
+        case 3:
+            for (int k = 0; k < numOfPasswords; k++)
+            {
+                for (int i = 0; i < passLenght; ++i)
+                {
+                    passGeneratorBigSmallChars(passLenght);
+
+                    outFile << password[i];
+                }
+                outFile << endl;
+            }
+            break;
+        case 4:
+            for (int k = 0; k < numOfPasswords; k++)
+            {
+                for (int i = 0; i < passLenght; ++i)
+                {
+                    passGeneratorSmallCharsRus(passLenght);
+
+                    outFile << password[i];
+                }
+                outFile << endl;
+            }
+            break;
+        case 5:
+            for (int k = 0; k < numOfPasswords; k++)
+            {
+                for (int i = 0; i < passLenght; ++i)
+                {
+                    passGeneratorBigSmallCharsRus(passLenght);
+
+                    outFile << password[i];
+                }
+                outFile << endl;
+            }
+            break;
+        case 6:
+            for (int k = 0; k < numOfPasswords; k++)
+            {
+                for (int i = 0; i < passLenght; ++i)
+                {
+                    passGeneratorNumbAndSmallCharsRus(passLenght);
+
+                    outFile << password[i];
+                }
+                outFile << endl;
+            }
+            break;
         }
 
         auto end = high_resolution_clock::now();
@@ -70,49 +140,89 @@ public:
 
         outFile.close();
 
-        cout << "Пароли успешно сгенерированы и записаны в файл " << filename << "" << endl;
+        cout << "Пароли успешно сгенерированы и записаны в файл " << FileName << "" << endl;
         cout << "Время генерации: " << duraction.count() << " секунд" << endl;
     }
 
-
-    void passGenerator(int passLenght)
+    void passGeneratorNumb(int passLenght)
     {
         password = new char[passLenght];
-
-        for (int i = 0; i < numOfNumbers; ++i)
+        
+        numOfNumbers = rand() % passLenght;
+        for (int i = 0; i < passLenght; ++i)
         {
             password[i] = char(rand() % 10 + 48);
         }
+    }
 
-        for (int i = numOfNumbers; i < numOfNumbers + numOfBigChars; ++i)
-        {
-            password[i] = char(rand() % 26 + 65);
-        }
+    void passGeneratorSmallChars(int passLenght)
+    {
+        password = new char[passLenght];
 
-        for (int i = numOfNumbers + numOfBigChars; i < numOfNumbers + numOfBigChars + numOfSmallChars; ++i)
+        numOfBigChars = rand() % passLenght;
+        for (int i = 0; i < passLenght; ++i)
         {
             password[i] = char(rand() % 26 + 97);
         }
+    }
 
-        for (int i = numOfNumbers + numOfBigChars + numOfSmallChars; i < numOfNumbers + numOfBigChars + numOfSmallChars + numOfBigCharsRus; ++i)
+    void passGeneratorBigSmallChars(int passLenght)
+    {
+        password = new char[passLenght];
+
+        numOfBigChars = rand() % passLenght;
+        numOfSmallChars = rand() % passLenght - numOfBigChars;
+        for (int i = 0; i < numOfBigChars; ++i)
         {
-            password[i] = char(rand() % 31 + 192);
+            password[i] = char(rand() % 26 + 65);
         }
+        for (int i = numOfBigChars; i < passLenght; ++i)
+        {
+            password[i] = char(rand() % 26 + 97);
+        }
+    }
 
-        for (int i = numOfNumbers + numOfBigChars + numOfSmallChars + numOfBigCharsRus; i < passLenght; ++i)
+    void passGeneratorSmallCharsRus(int passLenght)
+    {
+        password = new char[passLenght];
+
+        numOfSmallCharsRus = rand() % passLenght;
+        for (int i = 0; i < passLenght; ++i)
         {
             password[i] = char(rand() % 31 + 223);
         }
     }
 
-
-    void numOfChars(int passLenght)
+    void passGeneratorBigSmallCharsRus(int passLenght)
     {
-        numOfSmallChars = rand() % passLenght;
-        numOfBigChars = rand() % passLenght - numOfSmallChars;
-        numOfSmallCharsRus = rand() % passLenght - numOfSmallChars - numOfBigChars;
-        numOfBigCharsRus = rand() % passLenght - numOfSmallChars - numOfBigChars - numOfSmallCharsRus;
-        numOfNumbers = passLenght - numOfSmallChars - numOfBigChars - numOfSmallCharsRus - numOfBigCharsRus;
+        password = new char[passLenght];
+
+        numOfBigCharsRus = rand() % passLenght;
+        numOfSmallCharsRus = rand() % passLenght - numOfBigCharsRus;
+        for (int i = 0; i < numOfBigCharsRus; ++i)
+        {
+            password[i] = char(rand() % 31 + 192);
+        }
+        for (int i = numOfBigCharsRus; i < passLenght; ++i)
+        {
+            password[i] = char(rand() % 31 + 223);
+        }
+    }
+
+    void passGeneratorNumbAndSmallCharsRus(int passLenght)
+    {
+        password = new char[passLenght];
+
+        numOfNumbers = rand() % passLenght;
+        numOfBigCharsRus = rand() % passLenght - numOfNumbers;
+        for (int i = 0; i < numOfNumbers; ++i)
+        {
+            password[i] = char(rand() % 10 + 48);
+        }
+        for (int i = numOfNumbers; i < passLenght; ++i)
+        {
+            password[i] = char(rand() % 31 + 223);
+        }
     }
 };
 
