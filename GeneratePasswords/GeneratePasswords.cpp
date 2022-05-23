@@ -55,6 +55,14 @@ public:
             "5) кириллица строчные, заглавные\n"
             "6) цифры , латиница строчные\n";
         cin >> option;
+
+        if (option < 1 || option > 6)
+        {
+            system("cls");
+            cout << "Ошибка ввода данных, попробуйте еще раз" << endl;
+            cout << endl;
+            displayMessage();
+        }
         
         ofstream outFile(FileName);
 
